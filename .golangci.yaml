@@ -1,0 +1,271 @@
+# https://golangci-lint.run/docs/configuration/file/
+# Full reference:
+# https://github.com/golangci/golangci-lint/blob/HEAD/.golangci.reference.yml
+# Use this to see what the default values are.
+
+version: "2"
+
+run:
+  # timeout for analysis, e.g. 30s, 5m, default is 1m
+  timeout: 5m
+
+
+output:
+  formats:
+    text:
+      print-linter-name: true
+      print-issued-lines: true
+      colors: true
+  sort-order: 
+    - file
+    - linter
+    - severity
+
+
+formatters:
+  enable:
+    - gci
+#    - gofumpt
+    - golines
+  settings:
+    golines:
+      max-len: 100
+      tab-len: 4
+      shorten-comments: false
+      reformat-tags: true
+      chain-split-dots: true
+
+
+linters:
+  settings:
+    decorder:
+      # If true, order of declarations is not checked at all.
+      # Default: true (disabled)
+      disable-dec-order-check: false
+      # If true, `init` func can be anywhere in file (must not be declared before all other functions).
+      # Default: true (disabled)
+      disable-init-func-first-check: false
+      # If true, multiple global `type`, `const` and `var` declarations are allowed.
+      # Default: true (disabled)
+      disable-dec-num-check: false
+    dupl:
+      # tokens count to trigger issue, 150 by default
+      threshold: 300
+    errcheck:
+      # report about not checking of errors in type assertions: `a := b.(MyStruct)`;
+      # default is false: such cases aren't reported by default.
+      check-type-assertions: true
+      # report about assignment of errors to blank identifier: `num, _ := strconv.Atoi(numStr)`;
+      # default is false: such cases aren't reported by default.
+      check-blank: true
+    errchkjson:
+      # With check-error-free-encoding set to true, errchkjson does warn about errors
+      # from json encoding functions that are safe to be ignored,
+      # because they are not possible to happen.
+      #
+      # if check-error-free-encoding is set to true and errcheck linter is enabled,
+      # it is recommended to add the following exceptions to prevent from false positives:
+      #
+      #     linters-settings:
+      #       errcheck:
+      #         exclude-functions:
+      #           - encoding/json.Marshal
+      #           - encoding/json.MarshalIndent
+      #
+      # Default: false
+      check-error-free-encoding: true
+    exhaustive:
+      # indicates that switch statements are to be considered exhaustive if a
+      # 'default' case is present, even if all enum members aren't listed in the
+      # switch
+      default-signifies-exhaustive: true
+    gocognit:
+      # minimal code complexity to report, 30 by default (but we recommend 10-20)
+      min-complexity: 15
+    goconst:
+      # minimal length of string constant, 3 by default
+      min-len: 3
+      # minimal occurrences count to trigger, 3 by default
+      min-occurrences: 3
+    gocritic:
+      # Which checks should be enabled; can't be combined with 'disabled-checks';
+      # See https://go-critic.github.io/overview#checks-overview
+      # To check which checks are enabled run `GL_DEBUG=gocritic golangci-lint run`
+      # By default list of stable checks is used.
+      # Which checks should be disabled; can't be combined with 'enabled-checks'; default is empty
+      disabled-checks: []
+      # Enable multiple checks by tags, run `GL_DEBUG=gocritic golangci-lint run` to see all tags and checks.
+      # Empty list by default. See https://github.com/go-critic/go-critic#usage -> section "Tags".
+      enabled-tags:
+        - diagnostic
+        - performance
+    gocyclo:
+      # minimal code complexity to report, 30 by default (but we recommend 10-20)
+      min-complexity: 10
+    nestif:
+      # minimal complexity of if statements to report, 5 by default
+      min-complexity: 5
+    nolintlint:
+      # Exclude following linters from requiring an explanation.  Default is [].
+      allow-no-explanation: ["lll"]
+      # Enable to require an explanation of nonzero length after each nolint directive. Default is false.
+      require-explanation: true
+      # Enable to require nolint directives to mention the specific linter being suppressed. Default is false.
+      require-specific: true
+    whitespace:
+      multi-if: false # Enforces newlines (or comments) after every multi-line if statement
+      multi-func: false # Enforces newlines (or comments) after every multi-line function signature
+    wsl_v5:
+      disable:
+        - decl
+    varnamelen:
+      ignore-type-assert-ok : true
+      ignore-map-index-ok: true
+      ignore-chan-recv-ok: true
+      ignore-decls:
+        - t testing.T
+        - w http.ResponseWriter
+        - r *http.Request
+        - o metric.Observer
+  
+  exclusions:
+    presets:
+      - comments
+      - std-error-handling
+      - common-false-positives
+    rules:
+      # Exclude some linters from running on tests files.
+      - path: _test\.go
+        linters:
+          - gocyclo
+          - errcheck
+          - dupl
+          - funlen
+      # Exclude lll issues for long lines with go:generate
+      - linters:
+          - lll
+        source: "^//go:generate "
+
+
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - containedctx
+    - contextcheck
+    - copyloopvar
+    - cyclop
+    - decorder
+    - dogsled
+    - dupl
+    - dupword
+    - durationcheck
+    - err113
+    - errcheck
+    - errchkjson
+    - errname
+    - errorlint
+    - exhaustive
+    - exptostd
+    - forbidigo
+    - forcetypeassert
+    - funlen
+    - gocheckcompilerdirectives
+    - gochecknoglobals
+    - gochecknoinits
+    - gochecksumtype
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - godox
+    - goheader
+    - gomoddirectives
+    - goprintffuncname
+    - gosec
+    - gosmopolitan
+    - govet
+    - grouper
+    - iface
+    - importas
+    - inamedparam
+    - ineffassign
+    - interfacebloat
+    - intrange
+    - ireturn
+    - lll
+    - loggercheck
+    - maintidx
+    - makezero
+    - mirror
+    - mnd
+    - musttag
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnil
+    - nilnesserr
+    - nlreturn
+    - noctx
+    - nolintlint
+    - nonamedreturns
+    - nosprintfhostport
+#    - paralleltest
+    - perfsprint
+    - prealloc
+    - predeclared
+    - promlinter
+    - protogetter
+    - reassign
+    - recvcheck
+    - revive
+    - rowserrcheck
+    - sloglint
+    - spancheck
+    - sqlclosecheck
+    - staticcheck
+    - tagalign
+    - testableexamples
+    - testifylint
+    - testpackage
+    - thelper
+    - tparallel
+    - unconvert
+    - unparam
+    - unused
+    - usestdlibvars
+    - usetesting
+    - varnamelen
+    - wastedassign
+    - whitespace
+    - wrapcheck
+    - wsl_v5
+
+
+issues:
+  # Maximum issues count per one linter. Set to 0 to disable. Default is 50.
+  max-issues-per-linter: 0
+
+  # Maximum count of issues with the same text. Set to 0 to disable. Default is 3.
+  max-same-issues: 0
+
+  # Show only new issues: if there are unstaged changes or untracked files,
+  # only those changes are analyzed, else only changes in HEAD~ are analyzed.
+  # It's a super-useful option for integration of golangci-lint into existing
+  # large codebase. It's not practical to fix all existing issues at the moment
+  # of integration: much better don't allow issues in new code.
+  # Default is false.
+  new: false
+
+  # Fix found issues (if it's supported by the linter)
+  fix: false
+
+
+severity:
+  default: error
+  rules:
+    - linters:
+        - dupl
+      severity: info
